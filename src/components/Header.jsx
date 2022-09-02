@@ -2,39 +2,57 @@ import React, { useState, useContext, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { NotesContext } from "../context/NotesContext";
+import CheckIcon from "./CheckIcon";
 
 const Filters = memo(({ toggle }) => {
   const toggles = {
-    open: { opacity: 1 },
-    close: { opacity: 0 },
+    open: { opacity: 1, y: "auto", display: "block" },
+    close: {
+      opacity: 0,
+      y: 0,
+      display: "none",
+      transition: { duration: 0.22 },
+    },
   };
-  const { sortBy } = useContext(NotesContext);
+  const { sort, order, sortBy, orderBy } = useContext(NotesContext);
 
-  if (!toggle) return null;
   return (
     <AnimatePresence>
       <motion.div
-        layout
-        animate={toggle ? "open":"close"}
+        initial="close"
+        animate={toggle ? "open" : "close"}
         variants={toggles}
-        className="mt-2 right-0 z-10 top-12 absolute w-56 rounded-lg
-       shadow-lg bg-gradient-to-r from-rose-400 ring-1 text-white ring-gray-400"
+        className="mt-2 right-0 z-10 top-12 absolute w-56 rounded-lg bg-white border
+       "
       >
         <div className="py-1 divide-y divide-gray-400">
-          <button onClick={() => sortBy("name")} className="px-4 py-2 w-full">
+          <button
+            onClick={() => sortBy("name")}
+            className="target:bg-red-500 px-4 py-2 w-full flex justify-between"
+          >
             Ordenar por Nombres
+            {sort === "name" && <CheckIcon />}
           </button>
           <button
             onClick={() => sortBy("timestamp")}
-            className="px-4 py-2 w-full"
+            className="px-4 py-2 w-full flex justify-between"
           >
-            Ordenar por Antiguos
+            Ordenar por Fecha
+            {sort === "timestamp" && <CheckIcon />}
           </button>
           <button
-            onClick={() => sortBy("timestamp")}
-            className="px-4 py-2 w-full"
+            onClick={() => orderBy("asc")}
+            className="px-4 py-2 w-full flex justify-between"
           >
-            Ordenar por Recientes
+            Asc
+            {order === "asc" && <CheckIcon />}
+          </button>
+          <button
+            onClick={() => orderBy("desc")}
+            className="px-4 py-2 w-full flex justify-between"
+          >
+            Desc
+            {order === "desc" && <CheckIcon />}
           </button>
         </div>
       </motion.div>
@@ -48,15 +66,15 @@ const Header = ({ children }) => {
   const { addNote } = useContext(NotesContext);
 
   return (
-    <section className="max-w-xl  px-4 sm:px-0 py-5 mx-auto">
+    <section className="max-w-2xl px-4 sm:px-0 py-5 mx-auto">
       <h1 className="font-semibold text-4xl text-white">Firebase Notes</h1>
       <div className="flex gap-2 relative justify-between my-3">
         <form onSubmit={handleSubmit(addNote)} className="inline-flex">
           <input
             {...register("name")}
             className="p-2.5 rounded-l-md sm:w-full w-1/2 focus:outline-none rounded-r-none"
-            required
             placeholder="Escribe Algo"
+            required
             type="text"
           />
           <button
@@ -96,7 +114,7 @@ const Header = ({ children }) => {
             filtrar
           </span>
         </button>
-        {show && <Filters toggle={show} />}
+        {<Filters toggle={show} />}
       </div>
       {children}
     </section>

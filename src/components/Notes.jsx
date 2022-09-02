@@ -12,7 +12,7 @@ const Notes = () => {
     <motion.section
       animate={{ y: 15 }}
       transition={{ type: "spring", stiffness: 300 }}
-      className="flex my-5 flex-col gap-4 overflow-hidden"
+      className="grid sm:grid-cols-2 my-5  gap-4 "
     >
       <AnimatePresence initial={false}>
         {filterNotes.map((n) => (

@@ -16,6 +16,7 @@ export function NotesProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const [sort, sortBy] = useState("timestamp");
+  const [order, orderBy] = useState("asc");
 
   function fetchy() {
     onSnapshot(collection(db, "users"), (snap) => {
@@ -26,7 +27,6 @@ export function NotesProvider({ children }) {
       setNotes(posty);
       setLoading(false);
     });
-
   }
 
   useEffect(() => {
@@ -43,8 +43,8 @@ export function NotesProvider({ children }) {
   }
 
   const filterNotes = notes.sort((a, b) => {
-    let order = sort === "timestamp" ? 1 : -1;
-    return a[sort] < b[sort] ? 1 * order : -1 * order;
+    let orden = order === "asc" ? 1 : -1;
+    return a[sort] < b[sort] ? -1 * orden : 1 * orden;
   });
 
   async function deleteNote(doc_id) {
@@ -57,7 +57,10 @@ export function NotesProvider({ children }) {
     addNote,
     deleteNote,
     filterNotes,
+    sort,
+    order,
     sortBy,
+    orderBy,
   };
 
   return (
